@@ -1,5 +1,5 @@
 import './App.css'
-import Log from './pages/logger'
+import StatsPage from './pages/stats.jsx';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 function App() {
@@ -8,7 +8,7 @@ function App() {
     <div className="App">
       <Router>
         <Routes>
-            <Route index element={<Log />} />
+            <Route index element={<StatsPage />} />
         </Routes>
       </Router>
     </div>

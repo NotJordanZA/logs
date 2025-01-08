@@ -9,11 +9,11 @@ jobs:
       - run:
           name: Install local dependencies
           command: npm install
-          working_directory: frontend
+          working_directory: logs
       - run:
           name: Build application for production
           command: npm run build
-          working_directory: frontend
+          working_directory: logs
 
   deploy:
     docker:
@@ -21,27 +21,21 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install frontend local dependencies
+          name: Install logs local dependencies
           command: npm install
-          working_directory: frontend
-      - run:
-          name: Create .env file
-          command: |
-            echo "REACT_APP_SERVICE_ID = ${REACT_APP_SERVICE_ID}"
-            echo "REACT_APP_PUBLIC_KEY = ${REACT_APP_PUBLIC_KEY}"
-            echo "REACT_APP_TEMPLATE_ID = ${REACT_APP_TEMPLATE_ID}"
+          working_directory: logs
       - run:
           name: Build application for production
           command: npm run build
-          working_directory: frontend
+          working_directory: logs
       - run:
-          name: Install firebase-tools to frontend
+          name: Install firebase-tools to logs
           command: npm install firebase-tools
-          working_directory: frontend
+          working_directory: logs
       - run:
           name: Deploy app to Firebase
           command: ./node_modules/.bin/firebase deploy --only hosting --token ${FIREBASE_TOKEN}
-          working_directory: frontend
+          working_directory: logs
 workflows:
   main-workflow:
     jobs:
