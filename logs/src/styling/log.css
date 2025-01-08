@@ -1,0 +1,212 @@
+/* Overlay for popup */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s;
+  }
+  
+  /* Form container */
+  .popup-form {
+    position: relative;
+    background-color: #3a3a3a;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 400px;
+    text-align: left;
+    color: #f5f5f5;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: translateY(-20px);
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .popup-overlay.show {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .popup-form.show {
+    opacity: 1;
+    transform: translateY(0);  /* Slide down to normal position */
+  }
+
+  .popup-form h2{
+    margin-top: 0px;
+    margin-left: 5px;
+  }
+  
+  /* Close button */
+  .popup-close-button {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    color: #f5f5f5; 
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    cursor: pointer;
+    z-index: 10; /* Ensures it's above other elements */
+  }
+  
+  /* Add hover effect for better UX */
+  .popup-close-button:hover {
+    color: #bbb; /* Slightly lighter color on hover */
+  }
+
+  .popup-close-button:focus {
+    outline: none;
+  }
+  
+  /* Labels and their fields */
+  .form-label {
+    display: block;
+    position: relative;
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: #f5f5f5;
+    padding: 10px;
+    border: 1px solid #555;
+    border-radius: 8px;
+    height: min-content;
+  }
+
+  .form-label p{
+    padding-left: 2px;
+    padding-right: 2px;
+    margin: 0px;
+    position: absolute;
+    transform: translateY(-102%) scale(.9) translateX(-7%);
+    background-color: #3a3a3a;
+    width: min-content;
+    height: min-content;
+    white-space: nowrap;
+  }
+  
+  /* Inputs */
+  .form-input{
+    width: calc(100% - 20px);
+    padding: 10px;
+    /* margin-top: 5px; */
+    background-color: #4a4a4a;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    color: #f5f5f5;
+    outline-color: #007bff;
+  }
+
+  /* Slider specific styles */
+  .form-input-range {
+    width: calc(100% - 20px);
+    padding: 3px;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 2px;
+    background-color: #4a4a4a;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .form-input-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background-color: #6a6a6a;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .form-input-range::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background-color: #6a6a6a;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  
+  /* Input focus state */
+  /* .form-input:focus{
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    background-color: #4a4a4a;
+    border: 2px solid #4a4a4a;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #f5f5f5;
+    position: relative;
+    z-index: 0;
+    box-sizing: border-box;
+  }
+  .form-input-range:focus {
+    outline: none;
+    background-color: #555;
+  } */
+  
+  /* Submit Button */
+  .form-submit-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #5a5a5a;
+    color: #f5f5f5;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  
+  .form-submit-button:hover {
+    background-color: #6a6a6a;
+  }
+
+  .star-container{
+    display: flex;
+    align-self: center;
+    justify-content: center;
+  }
+  
+  @media (max-width: 600px) {
+    .popup-overlay {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end; /* Align to the bottom */
+      width: 101%;
+    }
+
+    .popup-form {
+      width: 100%;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      border-bottom-right-radius: 0px;
+      border-bottom-left-radius: 0px;
+      padding: 15px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); /* Subtle shadow for smaller screen */
+      transform: translateY(100%);
+    }
+
+    .popup-form.slide-up {
+      transform: translateY(0);
+      opacity: 1;
+      transition: transform 0.3s ease opacity 0.3s ease;
+    }
+  
+    /* Slide down when closed on mobile */
+    .popup-form.slide-down {
+      transform: translateY(100%);
+      transition: transform 0.3s ease opacity 0.3s ease;
+    }
+  }
