@@ -1,5 +1,4 @@
 import './App.css'
-import { PoopStatistics } from './components/logger';
 import StatsPage from './pages/stats';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
