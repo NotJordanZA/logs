@@ -1,5 +1,5 @@
 import './App.css'
-import StatsPage from './pages/stats';
+import StatsPage from './pages/stats.jsx';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 function App() {
