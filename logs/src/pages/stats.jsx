@@ -239,6 +239,7 @@ const StatsPage = () => {
   return (
     <div className="stats-page">
       <div>
+        <h1 className="page-heading">Logs</h1>
         <NewPoopLog onClose={togglePopup} isOpen={popupOpen} isMobile={isMobile}/>
         {!user ? (
           <Auth/>
