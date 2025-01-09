@@ -2,6 +2,7 @@ import React from "react";
 
 const TimeFilter = ({ timeRange, setTimeRange }) => {
   const options = [
+    { value: "overall", label: "Overall" },
     { value: "pastWeek", label: "Past Week" },
     { value: "pastMonth", label: "Past Month" },
     { value: "past3Months", label: "Past 3 Months" },

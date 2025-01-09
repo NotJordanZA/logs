@@ -8,7 +8,7 @@ import Auth from "../utils/login";
 import '../styling/stats.css';
 
 const StatsPage = () => {
-  const [timeRange, setTimeRange] = useState("pastWeek"); 
+  const [timeRange, setTimeRange] = useState("overall"); 
   const [customRange, setCustomRange] = useState({ startDate: null, endDate: null });
   const [statsData, setStatsData] = useState({});
   const [popupOpen, setPopupOpen] = useState(false);
@@ -75,6 +75,10 @@ const StatsPage = () => {
     let startDate, endDate;
 
     switch (range) {
+      case "overall":
+        startDate = new Date(firstPoopDate);
+        endDate = now;
+        break;
       case "pastWeek":
         startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
         endDate = now;
@@ -164,13 +168,12 @@ const StatsPage = () => {
     const periodStart = range ? range.startDate : new Date();
     const periodEnd = range ? range.endDate.toISOString().substring(0,10) : new Date().toISOString().substring(0,10);
     const effectiveStartDate = firstPoopDate > periodStart.toISOString().substring(0,10) ? firstPoopDate : periodStart.toISOString().substring(0,10);
-
+   
     const effectiveDays =
-      (new Date(periodEnd) - new Date(effectiveStartDate))/ (1000 * 60 * 60 * 24);
-
-    const poopFrequency =
+      (new Date(periodEnd) - new Date(effectiveStartDate))/ (1000 * 60 * 60 * 24) + 1;
+    
+      const poopFrequency =
       effectiveDays > 0 ? (totalPoops / effectiveDays).toFixed(2) : 0;
-
 
     setStatsData({
       totalPoops,
@@ -187,11 +190,56 @@ const StatsPage = () => {
   useEffect(() => {
     const range = getTimeRange(timeRange);
     if (range.startDate && range.endDate && auth.currentUser) fetchStats(range);
-  }, [timeRange, customRange, auth.currentUser]);
+  }, [timeRange, customRange, auth.currentUser, firstPoopDate]);
+
+  const formatDuration = (duration) => {
+    const minutes = Math.floor(duration);
+    const decimal = duration - minutes;
+    let fraction = "";
+
+    if (decimal >= 0.75) {
+      fraction = "¾";
+    } else if (decimal >= 0.5) {
+      fraction = "½";
+    } else if (decimal >= 0.25) {
+      fraction = "¼";
+    }
+
+    return `${minutes} ${fraction ? fraction : ""}`.trim();
+  };
+
+  const getWetnessDescriptor = (wetness) => {
+    if (wetness >= 0 && wetness < 0.5) return "Liquid";
+    if (wetness >= 0.5 && wetness < 1) return "Runny";
+    if (wetness >= 1 && wetness < 1.5) return "Mushy";
+    if (wetness >= 1.5 && wetness < 2) return "Soft";
+    if (wetness >= 2 && wetness < 2.5) return "Squishy";
+    if (wetness >= 2.5 && wetness < 3) return "Sticky";
+    if (wetness >= 3 && wetness < 3.5) return "Firm";
+    if (wetness >= 3.5 && wetness < 4) return "Solid";
+    if (wetness >= 4 && wetness < 4.5) return "Dense";
+    if (wetness >= 4.5 && wetness <= 5) return "Hard";
+    return "N/A";
+  };
+
+  const getGranularityDescriptor = (granularity) => {
+    if (granularity >= 0 && granularity < 0.5) return "Pebbly";
+    if (granularity >= 0.5 && granularity < 1) return "Cobbled";
+    if (granularity >= 1 && granularity < 1.5) return "Coarse";
+    if (granularity >= 1.5 && granularity < 2) return "Chunky";
+    if (granularity >= 2 && granularity < 2.5) return "Lumpy";
+    if (granularity >= 2.5 && granularity < 3) return "Clumped";
+    if (granularity >= 3 && granularity < 3.5) return "Formed";
+    if (granularity >= 3.5 && granularity < 4) return "Smooth";
+    if (granularity >= 4 && granularity < 4.5) return "Uniform";
+    if (granularity >= 4.5 && granularity <= 5) return "Singular";
+    return "N/A";
+  };
 
   return (
     <div className="stats-page">
       <div>
+        <h1 className="page-heading">Logs</h1>
         <NewPoopLog onClose={togglePopup} isOpen={popupOpen} isMobile={isMobile}/>
         {!user ? (
           <Auth/>
@@ -201,20 +249,20 @@ const StatsPage = () => {
             <div className="stats-grid">
               <StatCard title="Total Poops" value={statsData.totalPoops || 0} />
               <StatCard title="Top Locations" value={statsData.topLocations || "N/A"} />
-              <StatCard title="Average Overall Quality" value={statsData.avgOverallQuality || "N/A"} />
-              <StatCard title="Average Poop Quality" value={statsData.avgPoopQuality || "N/A"} />
-              <StatCard title="Average Wipe Quality" value={statsData.avgWipeQuality || "N/A"} />
-              <StatCard title="Average Wetness/Dryness" value={statsData.avgWetness || "N/A"} />
-              <StatCard title="Average Granularity" value={statsData.avgGranularity || "N/A"} />
+              <StatCard title="Average Overall Quality" value={`${statsData.avgOverallQuality}/5` || "N/A"} />
+              <StatCard title="Average Poop Quality" value={`${statsData.avgPoopQuality}/5` || "N/A"} />
+              <StatCard title="Average Wipe Quality" value={`${statsData.avgWipeQuality}/5` || "N/A"} />
+              <StatCard title="Average Wetness/Dryness" value={`${statsData.avgWetness} (${getWetnessDescriptor(statsData.avgWetness)})` || "N/A"} />
+              <StatCard title="Average Granularity" value={`${statsData.avgGranularity} (${getGranularityDescriptor(statsData.avgGranularity)})` || "N/A"} />
               <StatCard title="Most Popular Poop Time" value={statsData.popularPoopTime || "N/A"} />
-              <StatCard title="Average Duration" value={statsData.avgDuration || "N/A"} />
-              <StatCard title="Poop Frequency" value={statsData.poopFrequency || "N/A"} />
+              <StatCard title="Average Duration" value={`${formatDuration(statsData.avgDuration)} minutes` || "N/A"} />
+              <StatCard title="Poop Frequency" value={`${statsData.poopFrequency}/day` || "N/A"} />
               <StatCard title="Star Distribution" value={statsData.starDistribution || "N/A"} />
             </div>
             {isMobile ? (
-              <button className="new-poop-button"onClick={togglePopup}>+</button>
-            ):(
-              <button className="new-poop-button"onClick={togglePopup}>+ Log New Poop</button>
+              <button className="new-poop-button" onClick={togglePopup}>+</button>
+            ) : (
+              <button className="new-poop-button" onClick={togglePopup}>+ Log New Poop</button>
             )}
           </>
         )}
