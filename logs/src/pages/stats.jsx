@@ -5,6 +5,10 @@ import TimeFilter from "../components/TimeFilter";
 import StatCard from "../components/StatCard";
 import { NewPoopLog } from "../components/logger";
 import Auth from "../utils/login";
+import CustomDateRange from "../components/CustomDateRange";
+import TopLocations from "../components/TopLocations";
+import PopularTimes from "../components/PopularTimes";
+import StarDistribution from "../components/StarDistribution";
 import '../styling/stats.css';
 
 const StatsPage = () => {
@@ -134,8 +138,6 @@ const StatsPage = () => {
     }
   };
 
-
-
   const calculateStats = (logs) => {
     const totalPoops = logs.length;
     const avgOverallQuality =
@@ -245,25 +247,51 @@ const StatsPage = () => {
           <Auth/>
         ) : (
           <>
-            <TimeFilter timeRange={timeRange} setTimeRange={setTimeRange} setCustomRange={setCustomRange} />
+            <TimeFilter timeRange={timeRange} setTimeRange={setTimeRange} />
+            <CustomDateRange 
+              customRange={customRange}
+              setCustomRange={setCustomRange}
+              visible={timeRange === 'custom'}
+            />
             <div className="stats-grid">
               <StatCard title="Total Poops" value={statsData.totalPoops || 0} />
-              <StatCard title="Top Locations" value={statsData.topLocations || "N/A"} />
-              <StatCard title="Average Overall Quality" value={`${statsData.avgOverallQuality}/5` || "N/A"} />
-              <StatCard title="Average Poop Quality" value={`${statsData.avgPoopQuality}/5` || "N/A"} />
-              <StatCard title="Average Wipe Quality" value={`${statsData.avgWipeQuality}/5` || "N/A"} />
-              <StatCard title="Average Wetness/Dryness" value={`${statsData.avgWetness} (${getWetnessDescriptor(statsData.avgWetness)})` || "N/A"} />
-              <StatCard title="Average Granularity" value={`${statsData.avgGranularity} (${getGranularityDescriptor(statsData.avgGranularity)})` || "N/A"} />
-              <StatCard title="Most Popular Poop Time" value={statsData.popularPoopTime || "N/A"} />
-              <StatCard title="Average Duration" value={`${formatDuration(statsData.avgDuration)} minutes` || "N/A"} />
-              <StatCard title="Poop Frequency" value={`${statsData.poopFrequency}/day` || "N/A"} />
-              <StatCard title="Star Distribution" value={statsData.starDistribution || "N/A"} />
+              <StatCard
+                title="Poops per Day"
+                value={`${statsData.poopFrequency || 0}/day`}
+              />
+              <StatCard
+                title="Average Duration"
+                value={`${formatDuration(statsData.avgDuration || 0)} minutes`}
+              />
+              <StatCard
+                title="Average Overall Quality"
+                value={`${statsData.avgOverallQuality || 0}/5`}
+              />
+              <StatCard
+                title="Average Poop Quality"
+                value={`${statsData.avgPoopQuality || 0}/5`}
+              />
+              <StatCard
+                title="Average Wipe Quality"
+                value={`${statsData.avgWipeQuality || 0}/5`}
+              />
+              <StatCard
+                title="Wetness/Dryness"
+                value={`${statsData.avgWetness || 0} (${getWetnessDescriptor(statsData.avgWetness || 0)})`}
+              />
+              <StatCard
+                title="Granularity"
+                value={`${statsData.avgGranularity || 0} (${getGranularityDescriptor(statsData.avgGranularity || 0)})`}
+              />
+              <TopLocations logs={logs} />
+              <PopularTimes logs={logs} />
+              <StarDistribution logs={logs} />
+              {isMobile ? (
+                <button className="new-poop-button" onClick={togglePopup}>+</button>
+              ) : (
+                <button className="new-poop-button" onClick={togglePopup}>+ Log New Poop</button>
+              )}
             </div>
-            {isMobile ? (
-              <button className="new-poop-button" onClick={togglePopup}>+</button>
-            ) : (
-              <button className="new-poop-button" onClick={togglePopup}>+ Log New Poop</button>
-            )}
           </>
         )}
       </div>
