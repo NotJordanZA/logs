@@ -161,16 +161,20 @@ export const NewPoopLog = ({ isOpen, onClose, isMobile }) => {
 
   const handleTouchStart = (e) => {
     setStartY(e.touches[0].clientY);
+    setCurrentY(e.touches[0].clientY);
+    setDragDistance(0);
   };
 
   const handleTouchMove = (e) => {
+    e.preventDefault(); // Prevent background scroll
     const touchY = e.touches[0].clientY;
     setCurrentY(touchY);
-    setDragDistance(touchY - startY);
+    const newDragDistance = touchY - startY;
+    setDragDistance(Math.max(0, newDragDistance)); // Only allow downward drag
   };
 
   const handleTouchEnd = () => {
-    if (startY < currentY && currentY - startY > 75) {
+    if (dragDistance > 75) {
       onClose();
       setTimeout(() => {
         setDragDistance(0);
@@ -180,25 +184,42 @@ export const NewPoopLog = ({ isOpen, onClose, isMobile }) => {
     }
   };
 
+  const preventClose = (e) => {
+    if (!e.target.closest('.gesture-handle')) {
+      e.stopPropagation();
+    }
+  };
+
   return (
     <div className={`popup-overlay ${isOpen ? 'show' : ''}`} onClick={onClose}>
-      <div className={`popup-form ${isMobile ? (isOpen ? 'slide-up' : 'slide-down') : (isOpen ? 'show' : '')}`} onClick={(e) => e.stopPropagation()} onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
+      <div 
+        className={`popup-form ${isMobile ? (isOpen ? 'slide-up' : 'slide-down') : (isOpen ? 'show' : '')}`} 
+        style={{ transform: isMobile ? `translateY(${dragDistance}px)` : 'none' }}
+        onClick={preventClose} 
+      >
+        {isMobile && (
+          <div 
+            className="gesture-handle"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            <div className="handle-bar"></div>
+          </div>
+        )}
         <button
             className="popup-close-button"
             onClick={(e) => {
               e.stopPropagation();
               onClose();
             }}
-            onTouchStart={(e) => e.stopPropagation()}
-            onTouchMove={(e) => e.stopPropagation()}
-            onTouchEnd={(e) => e.stopPropagation()}
           >
           &times;
         </button>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} onClick={preventClose} onTouchStart={preventClose} onTouchMove={preventClose} onTouchEnd={preventClose}>
           <h2>Log a New Poop</h2>
 
-          <label className="form-label">
+          <label className="form-label" onClick={preventClose} onTouchStart={preventClose} onTouchMove={preventClose} onTouchEnd={preventClose}>
             <p>Date and Time</p>
             <input
               type="datetime-local"
@@ -206,11 +227,15 @@ export const NewPoopLog = ({ isOpen, onClose, isMobile }) => {
               className="form-input"
               max={today.toISOString().substring(0,10)}
               onChange={handleChange}
+              onClick={preventClose}
+              onTouchStart={preventClose}
+              onTouchMove={preventClose}
+              onTouchEnd={preventClose}
               required
             />
           </label>
 
-          <label className="form-label">
+          <label className="form-label" onClick={preventClose} onTouchStart={preventClose} onTouchMove={preventClose} onTouchEnd={preventClose}>
             <p>Location</p>
             <Creatable
              options={previousLocations}
@@ -218,11 +243,14 @@ export const NewPoopLog = ({ isOpen, onClose, isMobile }) => {
              placeholder="Home, Matthew's House, etc."
              onChange={handleLocationChange}
              styles={customStyles}
+             onTouchStart={preventClose}
+             onTouchMove={preventClose}
+             onTouchEnd={preventClose}
              required
             />
           </label>
 
-          <label className="form-label">
+          <label className="form-label" onClick={preventClose} onTouchStart={preventClose} onTouchMove={preventClose} onTouchEnd={preventClose}>
             <p>Duration (minutes)</p>
             <input
               type="number"
@@ -231,20 +259,24 @@ export const NewPoopLog = ({ isOpen, onClose, isMobile }) => {
               min="1"
               value={formData.duration}
               onChange={handleChange}
+              onClick={preventClose}
+              onTouchStart={preventClose}
+              onTouchMove={preventClose}
+              onTouchEnd={preventClose}
               required
             />
           </label>
 
-          <label className="form-label">
+          <label className="form-label" onClick={preventClose} onTouchStart={preventClose} onTouchMove={preventClose} onTouchEnd={preventClose}>
             <p>Poop Quality</p>
-            <div className="star-container">
+            <div className="star-container" onClick={preventClose} onTouchStart={preventClose} onTouchMove={preventClose} onTouchEnd={preventClose}>
               <Rating allowFraction onClick={handlePoopStars} required/>  
             </div>
           </label>
 
-          <label className="form-label" htmlFor="wipeQuality">
+          <label className="form-label" htmlFor="wipeQuality" onClick={preventClose} onTouchStart={preventClose} onTouchMove={preventClose} onTouchEnd={preventClose}>
             <p>Wipe Quality</p>
-            <div className="star-container">
+            <div className="star-container" onClick={preventClose} onTouchStart={preventClose} onTouchMove={preventClose} onTouchEnd={preventClose}>
               <Rating allowFraction onClick={handleWipeStars} required name="wipeQuality"/>
             </div>
           </label>

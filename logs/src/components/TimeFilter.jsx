@@ -18,7 +18,7 @@ const TimeFilter = ({ timeRange, setTimeRange }) => {
 
   return (
     <div className="time-filter">
-      <label htmlFor="timeRange">Select Time Range:</label>
+      <label htmlFor="timeRange">Time Range:</label>
       <select id="timeRange" value={timeRange} onChange={handleTimeRangeChange}>
         {options.map((option) => (
           <option key={option.value} value={option.value}>
