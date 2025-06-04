@@ -1,6 +1,6 @@
 # 💩 Poop Logger
 
-Welcome to the most sophisticated bathroom habit tracking app you never knew you needed! Because let's face it, everyone poops, so why not make it fun?
+Welcome to the most sophisticated bathroom habit tracking app you never knew you needed!
 Available at [https://dirty-logger.web.app/](https://dirty-logger.web.app/)
 
 ## 🌟 Features
